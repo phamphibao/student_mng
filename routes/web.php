@@ -30,3 +30,6 @@ Route::prefix('admin')->middleware('checkLogin')->group(function () {
     Route::resource('student','StudentController');
 
 }); 
+
+Route::get('/auth/redirect/{provider}', 'SocialController@redirect');
+Route::get('/callback/{provider}', 'SocialController@callback');
