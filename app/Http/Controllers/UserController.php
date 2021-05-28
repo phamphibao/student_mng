@@ -45,6 +45,7 @@ class UserController extends Controller
      */
     public function store(UserStore $request)
     {
+
          
             $image = $request->file('image');
             if(!empty($image)){
@@ -58,7 +59,7 @@ class UserController extends Controller
                 $user->email = $request->email;
                 $user->phone = $request->phone;
                 if (!empty($request->password)) {
-                    $user->password = $request->password;
+                    $user->password =Hash::make($request->password) ;
                 }
                 $user->image  = $fileName;
                 $user->birth_day  =  $request->date;
