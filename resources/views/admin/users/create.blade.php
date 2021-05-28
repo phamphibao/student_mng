@@ -34,7 +34,7 @@
                             <div class="warning-danger"><i class="fas fa-exclamation-triangle"></i>{{ $message }}</div>
                         @enderror
                         <label for=""><b>Xác thực mật khẩu</b></label>
-                        <input type="password" name="password_confirm" id="password_confirm" placeholder="Mặc định: 123456789"  class="form-control input-control">
+                        <input type="password" name="password_confirmation" id="password_confirmation" placeholder="Mặc định: 123456789"  class="form-control input-control">
                     </div>
                     <div class="form-group">
                         @error('phone')

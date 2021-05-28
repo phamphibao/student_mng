@@ -40,9 +40,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    protected $attributes = [
-        'password' => '$2y$10$M9dqSjhCZNrXj25rVRiDVu2DDbw3sqoOYeghZP/UV4O77hhEuW4kO', //123456789
-    ];
+    // protected $attributes = [
+    //     'password' => '$2y$10$M9dqSjhCZNrXj25rVRiDVu2DDbw3sqoOYeghZP/UV4O77hhEuW4kO', //123456789
+    // ];
 
 
 

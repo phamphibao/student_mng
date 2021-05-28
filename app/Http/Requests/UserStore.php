@@ -27,7 +27,8 @@ class UserStore extends FormRequest
             'name' => 'required|max:250',
             "email" => 'required|unique:users,email',
             'phone' => 'required|unique:users,phone',
-            "password" => 'max:250|confirmed',
+            "password" => 'required|max:250|confirmed',
+            'password_confirmation' => 'required|same:password',
             "date" => 'required',
             "gender" => 'required',
             "image" => 'mimes:jpeg,bmp,png|image|max:50:'
