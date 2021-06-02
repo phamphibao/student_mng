@@ -23,12 +23,12 @@
                                 <li class="list-group-item"><a href="{{ route('faculty.index') }}">Khoa</a></li>
                             @endcan
 
-                            {{-- @can('isAdmin') --}}
+                            @can('isAdmin')
                                 <li class="list-group-item"><a href="{{ route('user.index') }}">Quản lý tài khoản</a></li>
-                            {{-- @endcan
-                            @can('isAdmin') --}}
+                            @endcan
+                            @can('isAdmin')
                                 <li class="list-group-item"><a href="{{ route('roles.index') }}">Quản lý vai trò</a></li>
-                            {{-- @endcan --}}
+                            @endcan
                             
                           </ul>
                     </div>

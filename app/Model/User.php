@@ -82,8 +82,8 @@ class User extends Authenticatable
         $roles = $user->roles;
        
         foreach ($roles as $role) {
-            $roles = $role->permission;
-            if ($roles->contains('key',$key)) {
+            $permission = $role->permission;
+            if ($permission->contains('key',$key)) {
                 return true;
             }else{
                 return false;

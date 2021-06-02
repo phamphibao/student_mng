@@ -29,7 +29,21 @@
                         @enderror
                         <input type="text" name="email" id="email"  value="{{ old('email', $user_edit->email  ) }}" class="form-control input-control" placeholder="email@gmail.com">
                     </div>
-                    
+
+                    <div class="form-group">
+                        @error('password')
+                            <div class="warning-danger"><i class="fas fa-exclamation-triangle"></i>{{ $message }}</div>
+                        @enderror
+                        <label for=""><b>Mật khẩu</b></label>
+                        <input type="password" name="password" id="password" class="form-control input-control" placeholder="Thay đổi mật khẩu">
+                    </div>
+                    <div class="form-group">
+                        @error('password_confirmation')
+                            <div class="warning-danger"><i class="fas fa-exclamation-triangle"></i>{{ $message }}</div>
+                        @enderror
+                        <label><b>Xác nhận mật khẩu</b></label>
+                        <input type="password" name="password_confirmation" id="password_confirmation" class="form-control input-control" placeholder="Thay đổi mật khẩu">
+                    </div>
                     <div class="form-group">
                         @error('phone')
                             <div class="warning-danger"><i class="fas fa-exclamation-triangle"></i>{{ $message }}</div>

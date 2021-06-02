@@ -13,11 +13,13 @@
             <div class="col-12 d-flex justify-content-end">
                 <a href="{{ route('student.edit', ['student'=>$user->id]) }}" class="btn btn-info text-light">Chỉnh sửa</a>
 
+                @can('delete-student')
                 <form action="{{ route('student.destroy', ['student'=>$user->id]) }}" method="post" class="ml-2">
                     @csrf
                     @method('DELETE')
                     <input type="submit" name="submit" value="Xóa" class="btn btn-danger">
                 </form>
+                @endcan
 
             </div>
             <div class="col-4">

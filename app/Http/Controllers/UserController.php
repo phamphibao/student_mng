@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\UserStore;
-use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\UserUpdateRequest;
-use File;
-use Auth;
-use App\Model\User;
-use App\Model\Roles;
 use App\Model\Classes;
+use App\Model\Roles;
+use App\Model\User;
+use File;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -21,8 +21,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::paginate(10); 
-        return view('admin.users.index',compact('users'));
+        if (Gate::allows('isAdmin')) {
+            $users = User::where('id', '!=', 1)->paginate(10);
+            return view('admin.users.index', compact('users'));
+        }
     }
 
     /**
@@ -32,9 +34,11 @@ class UserController extends Controller
      */
     public function create()
     {
-        $classes = Classes::all();
-        $roles = Roles::all();
-        return view('admin.users.create',compact('roles','classes'));
+        if (Gate::allows('isAdmin')) {
+            $classes = Classes::all();
+            $roles = Roles::all();
+            return view('admin.users.create', compact('roles', 'classes'));
+        }
     }
 
     /**
@@ -45,36 +49,38 @@ class UserController extends Controller
      */
     public function store(UserStore $request)
     {
+        if (Gate::allows('isAdmin')) {
+            # code...
 
-         
             $image = $request->file('image');
-            if(!empty($image)){
-                $fileName = time().$image->getClientOriginalName();
-            }else{
+            if (!empty($image)) {
+                $fileName = time() . $image->getClientOriginalName();
+            } else {
                 $fileName = null;
             }
             try {
                 $user = new User;
-                $user->name  = $request->name;
+                $user->name = $request->name;
                 $user->email = $request->email;
                 $user->phone = $request->phone;
                 if (!empty($request->password)) {
-                    $user->password =Hash::make($request->password) ;
+                    $user->password = Hash::make($request->password);
                 }
-                $user->image  = $fileName;
-                $user->birth_day  =  $request->date;
-                $user->gender  = $request->gender;
-                $user->class_id  = $request->classes;
+                $user->image = $fileName;
+                $user->birth_day = $request->date;
+                $user->gender = $request->gender;
+                $user->class_id = $request->classes;
                 $user->save();
                 $user->roles()->attach($request->roles);
 
                 if (!empty($fileName)) {
                     $image->move('upload', $fileName);
                 }
-            } catch (\Exception  $e) {
+            } catch (\Exception $e) {
                 abort(404);
             }
-            return redirect()->route('user.index')->with('success','Thêm thành công');
+            return redirect()->route('user.index')->with('success', 'Thêm thành công');
+        }
     }
 
     /**
@@ -85,11 +91,13 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = User::find($id);
-        if (empty($user)) {
-            abort('404');
+        if (Gate::allows('isAdmin')) {
+            $user = User::find($id);
+            if (empty($user)) {
+                abort('404');
+            }
+            return view('admin.users.show', compact('user'));
         }
-        return view('admin.users.show',compact('user'));
     }
 
     /**
@@ -100,16 +108,19 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $user_edit = User::find($id);
-        $roles = Roles::all();
-        $classes = Classes::all();
-        $roles_of_user = $user_edit->roles;
-        
-        if (empty($user_edit)) {
-            abort('404');
-        }else{
-            return view('admin.users.edit',compact('user_edit','roles','roles_of_user','classes'));
+        if (Gate::allows('isAdmin')) {
+            $user_edit = User::find($id);
+            $roles = Roles::all();
+            $classes = Classes::all();
+            $roles_of_user = $user_edit->roles;
+
+            if (empty($user_edit)) {
+                abort('404');
+            } else {
+                return view('admin.users.edit', compact('user_edit', 'roles', 'roles_of_user', 'classes'));
+            }
         }
+
     }
 
     /**
@@ -120,28 +131,32 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(UserUpdateRequest $request, $id)
-    {   
-        $user_update = User::find($id);
-        $old_image   = $user_update->image;
-        $image = $request->file('image');
-        if(!empty($image)){
-            $fileName = time().$image->getClientOriginalName();
-        }else{
-            $fileName = null;
-        }
+    {
+        if (Gate::allows('isAdmin')) {
+            $user_update = User::find($id);
+            $old_image = $user_update->image;
+            $image = $request->file('image');
+            if (!empty($image)) {
+                $fileName = time() . $image->getClientOriginalName();
+            } else {
+                $fileName = null;
+            }
             try {
-              
-                $user_update->name  = $request->name;
-                $user_update->email  = $request->email;
+
+                $user_update->name = $request->name;
+                $user_update->email = $request->email;
                 $user_update->phone = $request->phone;
-                $user_update->birth_day  =  $request->date;
-                $user_update->gender  = $request->gender;
-                $user_update->class_id  = $request->classes;
+                $user_update->birth_day = $request->date;
+                $user_update->gender = $request->gender;
+                if (!empty($request->password)) {
+                    $user_update->password = Hash::make($request->password);
+                }
+                $user_update->class_id = $request->classes;
                 $user_update->roles()->sync($request->roles);
 
                 if (!empty($fileName)) {
-                    $user_update->image  = $fileName;
-                    $file_path = public_path('upload/'.$old_image);
+                    $user_update->image = $fileName;
+                    $file_path = public_path('upload/' . $old_image);
                     if (File::exists($file_path)) {
                         File::delete($file_path);
                     }
@@ -150,11 +165,11 @@ class UserController extends Controller
 
                 $user_update->update();
 
-            } catch (\Exception  $e) {
+            } catch (\Exception $e) {
                 abort(404);
             }
-            return redirect()->route('user.index')->with('success','Cập nhật thành công');
-      
+            return redirect()->route('user.index')->with('success', 'Cập nhật thành công');
+        }
     }
 
     /**
@@ -164,27 +179,24 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {   
-      
-        $user_delete = User::find($id);
-        
-        if (!empty($user_delete)) {
-            $old_image  = $user_delete->image;
-            if (!empty($old_image)) {
-                $file_path = public_path('upload/'.$old_image);
-                if (File::exists($file_path)) {
-                    File::delete($file_path);
+    {
+
+        if (Gate::allows('isAdmin')) {
+            $user_delete = User::find($id);
+            if (!empty($user_delete)) {
+                $old_image = $user_delete->image;
+                if (!empty($old_image)) {
+                    $file_path = public_path('upload/' . $old_image);
+                    if (File::exists($file_path)) {
+                        File::delete($file_path);
+                    }
                 }
+                $user_delete->delete();
+
+                return redirect()->route('user.index')->with('success', 'Xóa thành công!');
             }
-            $user_delete->delete();
-          
-            return redirect()->route('user.index')->with('success','Xóa thành công!');
+            return abort(404);
         }
-        return abort(404);
-      
-      
     }
 
-
 }
-

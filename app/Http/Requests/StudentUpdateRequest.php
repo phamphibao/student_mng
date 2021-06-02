@@ -31,7 +31,6 @@ class StudentUpdateRequest extends FormRequest
             'image' => 'mimes:jpeg,bmp,png|image|max:50:',
             'date' =>  'required',
             'gender' => 'required',
-            'classes' => 'required'
         ];
     }
 

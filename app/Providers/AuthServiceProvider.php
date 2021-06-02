@@ -15,7 +15,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        // 'App\Model' => 'App\Policies\ModelPolicy',
+        // 'App\Model\User' => 'App\Policies\UserPolicy',
     ];
 
     /**
@@ -27,21 +27,33 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
         $user = Auth::user();
-
-        Gate::after(function ($user) {
-           return ($user->key === 'isAdmin') ? true : "";
+        
+        Gate::before(function ($user) {
+            if($user->key === 'isAdmin'){
+                return true;
+            }else {
+                return null;
+            }
         });
-        Gate::define('isAdmin', function ($user) {
-            return ($user->key === 'isAdmin') ? true : "";
-        });
-
+      
+ 
 
         Gate::define('view-student', function ($user) {
             return $user->checkPermission('view-student');
         });
 
-        Gate::define('edit-student', function ($user) {
-            return $user->checkPermission('edit-student');
+        Gate::define('edit-student', function ($user,$user_edit) {
+       
+            $boolean = false;
+            if ($user->id === $user_edit->id && $user->checkPermission('edit-student')) {
+                $boolean = true;
+                
+            }elseif ($user->checkPermission('isAdmin')) {
+                $boolean = true;
+            }else{
+                $boolean = false;
+            }
+            return $boolean;
         });
 
         Gate::define('delete-student', function ($user) {
@@ -68,8 +80,19 @@ class AuthServiceProvider extends ServiceProvider
             return $user->checkPermission('view-teacher');
         });
 
-        Gate::define('edit-teacher', function ($user) {
-            return $user->checkPermission('edit-teacher');
+        Gate::define('edit-teacher', function ($user, $user_edit) {
+            $boolean = false;
+            $id = $user_edit->id;
+           
+            if ($user->id === $user_edit->id && $user->checkPermission('edit-teacher')) {
+                $boolean = true;
+                return $boolean;
+            }elseif ($user->checkPermission('isAdmin')) {
+                $boolean = true;
+                return $boolean;
+            }
+            
+            return $boolean;
         });
 
         Gate::define('delete-teacher', function ($user) {
@@ -91,5 +114,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('edit-faculty', function ($user) {
             return $user->checkPermission('edit-faculty');
         });
+
+
+       
+        
     }
 }

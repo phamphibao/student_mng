@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Model\User;
-use App\Model\Roles;
-use Illuminate\Http\Request;
 use App\Http\Requests\TeacherUpdate;
+use App\Model\Roles;
+use App\Model\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
+
 class TeacherController extends Controller
 {
     /**
@@ -15,15 +17,15 @@ class TeacherController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {   
-        if(Gate::allows('view-teacher')){
+    {
+
+        if (Gate::allows('view-teacher')) {
             $roles = Roles::find(3);
-            return view('admin.teacher.index',compact('roles'));
-        }else{
+            return view('admin.teacher.index', compact('roles'));
+        } else {
             abort(404);
         }
-       
-       
+
     }
 
     /**
@@ -55,28 +57,28 @@ class TeacherController extends Controller
      */
     public function show($id)
     {
-        if(Gate::allows('view-teacher')){
+        if (Gate::allows('view-teacher')) {
             $user = User::find($id);
             $teacher = '3';
             $collect = array();
-            if(!empty($user)){
+            if (!empty($user)) {
                 foreach ($user->roles as $roles) {
-                   $collect[] = $roles->id;
+                    $collect[] = $roles->id;
                 }
-            
-                if(in_array(3,$collect)){
-                    return view('admin.teacher.show',compact('user'));
-                }else{
+
+                if (in_array(3, $collect)) {
+                    return view('admin.teacher.show', compact('user'));
+                } else {
                     abort(404);
                 }
-        
-            }else{
+
+            } else {
                 abort(404);
-            }  
-        }else{
+            }
+        } else {
             abort(404);
         }
-         
+
     }
 
     /**
@@ -87,18 +89,20 @@ class TeacherController extends Controller
      */
     public function edit($id)
     {
-        if(Gate::allows('edit-teacher')){
         $user_edit = User::find($id);
-        if (!empty($user_edit)) {
-            $roles = Roles::all();
-            $roles_of_user = $user_edit->roles;
-        }else{
+
+        if (Gate::allows('edit-teacher', $user_edit)) {
+            if (!empty($user_edit)) {
+                $roles = Roles::all();
+                $roles_of_user = $user_edit->roles;
+                return view('admin.teacher.edit', compact('user_edit', 'roles', 'roles_of_user'));
+            } else {
+                abort(404);
+            }
+        } else {
             abort(404);
         }
-        return view('admin.teacher.edit',compact('user_edit','roles','roles_of_user'));
-        }else{
-            abort(404);
-        }
+
     }
 
     /**
@@ -112,17 +116,34 @@ class TeacherController extends Controller
     {
         $teacher = User::find($id);
 
-        if(empty($teacher)){
+        if (empty($teacher)) {
             abort(404);
         }
+
         try {
-            $teacher->update($request->all());
-            $teacher->roles()->sync($request->roles);
+            $image = $request->file('image');
+            if (!empty($image)) {
+                $fileName = time() . $image->getClientOriginalName();
+            } else {
+                $fileName = null;
+            }
+
+            $teacher->name = $request->name;
+            $teacher->email = $request->email;
+            $teacher->phone = $request->phone;
+            if (!empty($request->password)) {
+                $teacher->password = Hash::make($request->password);
+            }
+            $teacher->image = $fileName;
+            $teacher->birth_day = $request->date;
+            $teacher->gender = $request->gender;
+            $teacher->class_id = $request->classes;
+            $teacher->update();
         } catch (\Throwable $th) {
             abort(404);
         }
-            
-            return redirect()->route('teacher.show',['teacher' => $teacher->id])->with('success','Chỉnh sửa thành công');
+
+        return redirect()->route('teacher.show', ['teacher' => $teacher->id])->with('success', 'Chỉnh sửa thành công');
     }
 
     /**
@@ -133,29 +154,29 @@ class TeacherController extends Controller
      */
     public function destroy($id)
     {
-        if(Gate::allows('delete-teacher')){
+        if (Gate::allows('delete-teacher')) {
             $teacher_delete = User::find($id);
             $teacher = '3';
             $collect = array();
-            if(!empty($teacher_delete)){
-              
+            if (!empty($teacher_delete)) {
+
                 foreach ($teacher_delete->roles as $roles) {
-                   $collect[] = $roles->id;
+                    $collect[] = $roles->id;
                 }
-            
-                if(in_array(3,$collect)){
+
+                if (in_array(3, $collect)) {
                     $teacher_delete->delete();
-                    return redirect()->route('teacher.index')->with('success','Xóa thành công!');
-                }else{
+                    return redirect()->route('teacher.index')->with('success', 'Xóa thành công!');
+                } else {
                     abort(404);
                 }
-        
-            }else{
+
+            } else {
                 abort(404);
-            }   
-        }else{
+            }
+        } else {
             abort(404);
         }
-      
+
     }
 }

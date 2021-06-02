@@ -20,7 +20,7 @@ class StudentController extends Controller
     {
        
         if (Gate::allows('view-student')) {
-            $users = Roles::find(2)->Users()->get();
+            $users = Roles::find(2)->Users()->where('user_id','!=',1)->get();
             return view('admin.students.index',['users' =>  $users]);
         }{
             abort(404);
@@ -75,9 +75,9 @@ class StudentController extends Controller
      */
     public function edit($id)
     {
-        if (Gate::allows('edit-student')) {
+        $student = User::find($id);
+        if (Gate::allows('edit-student',$student)) {
             $id_roles_student = 2;
-            $student = User::find($id);
             if ($student) {
                 $classes = Classes::all(); 
                 $roles = $student->roles;
@@ -104,9 +104,10 @@ class StudentController extends Controller
      */
     public function update(StudentUpdateRequest $request, $id)
     {
-        if (Gate::allows('edit-student')) {
-            $id_roles_student = 2;
-            $student_update = User::find($id);
+        $id_roles_student = 2;
+        $student_update = User::find($id);
+        if (Gate::allows('edit-student',$student_update)) {
+        
             if ($student_update) {
                 $roles = $student_update->roles;
                 if($roles->contains($id_roles_student)){

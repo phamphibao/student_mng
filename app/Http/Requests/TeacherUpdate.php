@@ -25,15 +25,17 @@ class TeacherUpdate extends FormRequest
     public function rules()
     {
         $id = $this->route()->parameter('teacher');
-        
+       
         return [
             'name' => 'required|max:250',
             "email" => 'required|unique:users,email,'.$id.'',
+            'password' => 'confirmed',
             'phone' => 'required|unique:users,phone,'.$id.'',
             "date" => 'required',
             "gender" => 'required',
             "image" => 'mimes:jpeg,bmp,png|image|max:50:'
         ];
+       
     }
 
      /**
@@ -48,6 +50,7 @@ class TeacherUpdate extends FormRequest
             'name.max' => 'Vượt quá số ký tự cho phép',
             'email.required' => 'Vui lòng nhập email',
             'email.unique' => 'Email đã tồn tại',
+            'password.confirmed' => 'Mật khẩu không khớp',
             'phone.required' => 'Vui lòng thêm số điện thoại',
             'phone.unique' => 'Số điện thoại đã tồn tại',
             'date.required' => 'Thêm ngày tháng năm sinh',

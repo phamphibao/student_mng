@@ -192,6 +192,15 @@ class PermissionSeeder extends Seeder
             'id_parent' => 2
         ]);
 
+     
+
+        for ($i=1; $i <=21 ; $i++) { 
+            DB::table('roles_permission')->insert([
+                'id'   => $i,
+                'roles_id' => 1,
+                'permission_id' => $i,
+            ]);
+        }
             
     }
 }

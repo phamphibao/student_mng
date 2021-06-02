@@ -30,6 +30,20 @@
                         <input type="text" name="email" id="email"  value="{{ old('email', $user_edit->email  ) }}" class="form-control input-control" placeholder="email@gmail.com">
                     </div>
                     <div class="form-group">
+                        <label for=""><b>Mật khẩu mới</b></label>
+                        @error('password')
+                            <div class="warning-danger"><i class="fas fa-exclamation-triangle"></i>{{ $message }}</div>
+                        @enderror
+                        <input type="password" name="password" id="password" placeholder="Nhập mật khẩu mới" class="form-control input-control">
+                    </div>
+                    <div class="form-group">
+                        <label for=""><b>Xác nhận mật khẩu</b></label>
+                        @error('password_confirmation')
+                            <div class="warning-danger"><i class="fas fa-exclamation-triangle"></i>{{ $message }}</div>
+                        @enderror
+                        <input type="password" name="password_confirmation" id="password_confirmation" placeholder="Xác thực mật khẩu" class="form-control input-control">
+                    </div>
+                    <div class="form-group">
                         @error('phone')
                             <div class="warning-danger"><i class="fas fa-exclamation-triangle"></i>{{ $message }}</div>
                         @enderror
@@ -77,17 +91,6 @@
                             <option value="1" >Nam</option>
                             <option value="2">Nữ</option>
                             <option value="3">Khác</option>
-                        </select>
-                    </div>
-                    <div class="form-group ">
-                        <label for=""><b>Vai trò</b></label>
-                        @error('gender')
-                            <div class="warning-danger"><i class="fas fa-exclamation-triangle"></i>{{ $message }}</div>
-                        @enderror
-                        <select class="form-control select-option select-js" name="roles[]" multiple="multiple">
-                            @foreach ($roles as $role)
-                             <option value="{{ $role->id }}" {{ ($roles_of_user->contains($role->id) ? 'selected' : "") }}>{{ $role->name }}</option>
-                            @endforeach
                         </select>
                     </div>
                     <div class="form-group">

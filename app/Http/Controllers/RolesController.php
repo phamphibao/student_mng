@@ -17,7 +17,7 @@ class RolesController extends Controller
      */
     public function index()
     {
-        $roles = Roles::paginate(10);
+        $roles = Roles::where('id','!=',1)->paginate(10);
 
         return view('admin.roles.index',compact('roles'));
     }

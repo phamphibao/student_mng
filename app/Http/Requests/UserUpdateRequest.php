@@ -29,6 +29,7 @@ class UserUpdateRequest extends FormRequest
             'name' => 'required|max:250',
             "email" => 'required|unique:users,email,'.$id.'',
             'phone' => 'unique:users,phone,'.$id.'',
+            'password' => 'confirmed',
             "date" => 'required',
             "gender" => 'required',
             "image" => 'mimes:jpeg,bmp,png|image|max:50:'
@@ -49,9 +50,7 @@ class UserUpdateRequest extends FormRequest
             'email.unique' => 'Email đã tồn tại',
             'phone.required' => 'Vui lòng thêm số điện thoại',
             'phone.unique' => 'Số điện thoại đã tồn tại',
-            'password.max' => 'Mật khẩu quá dài',
             'password.confirmed' => 'Mật khẩu không khớp',
-            'password.required' => 'Vui lòng nhập mật khẩu',
             'date.required' => 'Thêm ngày tháng năm sinh',
             'gender.required' => 'Chọn giới tính',
             'image.mimes' => 'Ảnh phải có một trong các định dạng sau: jpeg,bmp,png',
