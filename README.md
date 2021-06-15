@@ -80,6 +80,15 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 
 ## facebook app key
+
 FACEBOOK_APP_ID = 164734262270152
 FACEBOOK_APP_SECRET = 65f91aebbc7bc52135a12272ce02bb0d
 FACEBOOK_APP_CALLBACK_URL = https://studentmng98.000webhostapp.com/callback/facebook
+
+
+## pusher app key
+
+PUSHER_APP_ID=1219567
+PUSHER_APP_KEY=01afbb85b87b4c976bd1
+PUSHER_APP_SECRET=fbdb8897042b06f698ba
+PUSHER_APP_CLUSTER=ap1
