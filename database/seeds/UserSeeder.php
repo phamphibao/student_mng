@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Model\User;
 use App\Model\Roles;
+use App\Model\Message;
 class UserSeeder extends Seeder
 {
     protected $user;
@@ -37,6 +38,7 @@ class UserSeeder extends Seeder
             ); 
         });
        
+        factory(App\Model\Message::class, 300)->create();
       
 
        

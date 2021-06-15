@@ -30,3 +30,106 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 const app = new Vue({
     el: '#app',
 });
+
+$(function () {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    })
+    loadFile();
+    onChangeRoles();
+    getMessages();
+    sendMessage();
+});
+
+
+function loadFile(event) {
+    var output = document.getElementById('output');
+    try {
+        output.src = URL.createObjectURL(event.target.files[0]);
+    } catch (error) {
+        return 0;
+    }
+    
+    output.onload = function () {
+      URL.revokeObjectURL(output.src) // free memory
+    }
+  }
+  
+  function onChangeRoles() {
+    var roles = $('#roles').val();
+    var search_value = '2';
+    try {
+      var value = roles.indexOf(search_value);
+      if (value >= 0) {
+        $('#group-class').slideDown();
+      } else {
+        $('#group-class').slideUp();
+        $('#classes').val('');
+      }
+    } catch (error) {
+      return 0;
+    }
+  
+  }
+  
+  
+  function getMessages() {
+  
+    $('.info_user').click(function (e) {
+      e.preventDefault();
+      $('#messages').html('');
+      var user_id = $(this).attr('id');
+      $('#messages').attr('data-id',user_id);
+    
+      $.ajax({
+        type: "post",
+        url: "/admin/messages",
+        data: {
+          user_id: user_id,
+        },
+        // dataType: "json",
+        success: function (response) {
+  
+           
+            $.each(response, function (key, value) {
+              var message = $(`
+                <li class="message clearfix">
+                    <div class=" ${user_id == response[key]['from'] ? 'received' : 'sent'}">
+                        <p>${response[key]['content']}</p>
+                        <p class="date">${(response[key]['date'])}</p>
+                    </div>
+                </li>
+              `);
+  
+              $('#messages').append(message);
+          });
+        }
+      });
+    });
+  }
+  
+  function sendMessage () {
+  
+    $('#message-send').on('keydown', function (e) { 
+     
+      var received = $('#messages').attr('data-id');
+      var message = $(this).val();
+        if(e.which == 13 && message != "" && received != "" ){
+          $(this).val('');
+          $.ajax({
+            type: "post",
+            url: "/admin/send/messages",
+            data: {
+              received: received,
+              message: message
+            },
+            success: function (response) {
+             
+            }
+          });
+        }
+    });
+  
+  }

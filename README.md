@@ -77,3 +77,9 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 "# student_mng" 
+
+
+## facebook app key
+FACEBOOK_APP_ID = 164734262270152
+FACEBOOK_APP_SECRET = 65f91aebbc7bc52135a12272ce02bb0d
+FACEBOOK_APP_CALLBACK_URL = https://studentmng98.000webhostapp.com/callback/facebook

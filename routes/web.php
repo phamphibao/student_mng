@@ -29,6 +29,10 @@ Route::prefix('admin')->middleware('checkLogin')->group(function () {
     Route::resource('class','ClassController');
     Route::resource('student','StudentController');
 
+    Route::get('/messsage', 'MessageController@index')->name('message.index');
+    route::post('/messages','MessageController@messages')->name('message.messages');
+    route::post('/send/messages','MessageController@sendMessages')->name('message.send');
+
 }); 
 
 Route::get('/auth/redirect/{provider}', 'SocialController@redirect');

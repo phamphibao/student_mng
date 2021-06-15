@@ -49822,6 +49822,92 @@ Vue.component('example-component', __webpack_require__(/*! ./components/ExampleC
 var app = new Vue({
   el: '#app'
 });
+$(function () {
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+  loadFile();
+  onChangeRoles();
+  getMessages();
+  sendMessage();
+});
+
+function loadFile(event) {
+  var output = document.getElementById('output');
+
+  try {
+    output.src = URL.createObjectURL(event.target.files[0]);
+  } catch (error) {
+    return 0;
+  }
+
+  output.onload = function () {
+    URL.revokeObjectURL(output.src); // free memory
+  };
+}
+
+function onChangeRoles() {
+  var roles = $('#roles').val();
+  var search_value = '2';
+
+  try {
+    var value = roles.indexOf(search_value);
+
+    if (value >= 0) {
+      $('#group-class').slideDown();
+    } else {
+      $('#group-class').slideUp();
+      $('#classes').val('');
+    }
+  } catch (error) {
+    return 0;
+  }
+}
+
+function getMessages() {
+  $('.info_user').click(function (e) {
+    e.preventDefault();
+    $('#messages').html('');
+    var user_id = $(this).attr('id');
+    $('#messages').attr('data-id', user_id);
+    $.ajax({
+      type: "post",
+      url: "/admin/messages",
+      data: {
+        user_id: user_id
+      },
+      // dataType: "json",
+      success: function success(response) {
+        $.each(response, function (key, value) {
+          var message = $("\n                <li class=\"message clearfix\">\n                    <div class=\" ".concat(user_id == response[key]['from'] ? 'received' : 'sent', "\">\n                        <p>").concat(response[key]['content'], "</p>\n                        <p class=\"date\">").concat(response[key]['date'], "</p>\n                    </div>\n                </li>\n              "));
+          $('#messages').append(message);
+        });
+      }
+    });
+  });
+}
+
+function sendMessage() {
+  $('#message-send').on('keydown', function (e) {
+    var received = $('#messages').attr('data-id');
+    var message = $(this).val();
+
+    if (e.which == 13 && message != "" && received != "") {
+      $(this).val('');
+      $.ajax({
+        type: "post",
+        url: "/admin/send/messages",
+        data: {
+          received: received,
+          message: message
+        },
+        success: function success(response) {}
+      });
+    }
+  });
+}
 
 /***/ }),
 
@@ -49957,8 +50043,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\school_mng\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\school_mng\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\xampp\htdocs\student_mng\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\student_mng\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
