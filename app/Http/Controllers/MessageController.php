@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Model\User;
 use App\Model\Message;
 use Auth;
+use App\Events\Chat;
+
 class MessageController extends Controller
 {
     public function index()
@@ -58,6 +60,8 @@ class MessageController extends Controller
         $message->to   = $to;
         $message->content = $content;
         $message->save();
+
+        event(new Chat($message,$from));
 
         return ['success' => true];
     }

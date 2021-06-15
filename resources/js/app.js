@@ -37,10 +37,31 @@ $(function () {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     })
+    var user_id = $('#user_current_login').val();
+    console.log(user_id);
+    $('.select-js').select2();
+
     loadFile();
     onChangeRoles();
     getMessages();
     sendMessage();
+
+    var channel = Echo.channel('my-chat');
+      channel.listen('.chat', function(data) {
+        console.log(JSON.stringify(data));
+        console.log(JSON.stringify(data['user']));
+        var content = $(`
+          <li class="message clearfix">
+              <div class="${user_id != data['message']['from'] ? 'received' : 'sent'}">
+                  <p>${data['message']['content']}</p>
+                  <p class="date">${(data['message']['created_at'])}</p>
+              </div>
+          </li>
+        `);
+        $('#messages').append(content);
+        var objDiv = document.getElementById("message-wrapper");
+        objDiv.scrollTop = objDiv.scrollHeight;
+      });
 });
 
 
@@ -61,12 +82,14 @@ function loadFile(event) {
     var roles = $('#roles').val();
     var search_value = '2';
     try {
-      var value = roles.indexOf(search_value);
-      if (value >= 0) {
-        $('#group-class').slideDown();
-      } else {
-        $('#group-class').slideUp();
-        $('#classes').val('');
+      if (roles != "") {
+        var value = roles.indexOf(search_value);
+        if (value >= 0) {
+          $('#group-class').slideDown();
+        } else {
+          $('#group-class').slideUp();
+          $('#classes').val('');
+        }
       }
     } catch (error) {
       return 0;
@@ -104,6 +127,8 @@ function loadFile(event) {
               `);
   
               $('#messages').append(message);
+              var objDiv = document.getElementById("message-wrapper");
+              objDiv.scrollTop = objDiv.scrollHeight;
           });
         }
       });
