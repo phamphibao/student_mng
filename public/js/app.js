@@ -55948,8 +55948,8 @@ $(function () {
   var user_id = $('#user_current_login').val();
   console.log(user_id);
   $('.select-js').select2();
-  loadFile();
-  onChangeRoles();
+  loadFile(); // onChangeRoles();
+
   getMessages();
   sendMessage();
   var channel = Echo.channel('my-chat');
@@ -55961,6 +55961,23 @@ $(function () {
     var objDiv = document.getElementById("message-wrapper");
     objDiv.scrollTop = objDiv.scrollHeight;
   });
+  var roles = $('#roles').val();
+  var search_value = '2';
+
+  try {
+    if (roles != "") {
+      var value = roles.indexOf(search_value);
+
+      if (value >= 0) {
+        $('#group-class').slideDown();
+      } else {
+        $('#group-class').slideUp();
+        $('#classes').val('');
+      }
+    }
+  } catch (error) {
+    return 0;
+  }
 });
 
 function loadFile(event) {

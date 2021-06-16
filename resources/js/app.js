@@ -94,7 +94,6 @@ function loadFile(event) {
     } catch (error) {
       return 0;
     }
-  
   }
   
   
@@ -114,8 +113,6 @@ function loadFile(event) {
         },
         // dataType: "json",
         success: function (response) {
-  
-           
             $.each(response, function (key, value) {
               var message = $(`
                 <li class="message clearfix">
