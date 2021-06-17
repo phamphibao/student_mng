@@ -33,6 +33,7 @@ Route::prefix('admin')->middleware('checkLogin')->group(function () {
     route::post('/messages','MessageController@messages')->name('message.messages');
     route::post('/send/messages','MessageController@sendMessages')->name('message.send');
 
+    Route::get('users/account','UserController@account')->name('user.account');
 }); 
 
 Route::get('/auth/redirect/{provider}', 'SocialController@redirect');

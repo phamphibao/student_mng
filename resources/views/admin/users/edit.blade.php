@@ -91,17 +91,19 @@
                             <option value="3">Khác</option>
                         </select>
                     </div>
-                    <div class="form-group ">
-                        <label for=""><b>Vai trò</b></label>
-                        @error('gender')
-                            <div class="warning-danger"><i class="fas fa-exclamation-triangle"></i>{{ $message }}</div>
-                        @enderror
-                        <select class="form-control select-option select-js" name="roles[]" id="roles" onchange="onChangeRoles()" multiple="multiple">
-                            @foreach ($roles as $role)
-                             <option value="{{ $role->id }}" {{ ($roles_of_user->contains($role->id) ? 'selected' : "") }}>{{ $role->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    @can('isAdmin')
+                        <div class="form-group ">
+                            <label for=""><b>Vai trò</b></label>
+                            @error('gender')
+                                <div class="warning-danger"><i class="fas fa-exclamation-triangle"></i>{{ $message }}</div>
+                            @enderror
+                            <select class="form-control select-option select-js" name="roles[]" id="roles" onchange="onChangeRoles()" multiple="multiple">
+                                @foreach ($roles as $role)
+                                <option value="{{ $role->id }}" {{ ($roles_of_user->contains($role->id) ? 'selected' : "") }}>{{ $role->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>  
+                    @endcan
 
                     <div class="form-group" id="group-class" style="display: none;">
                         <label for=""><b>Lớp:</b></label>

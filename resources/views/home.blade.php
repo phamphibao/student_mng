@@ -30,6 +30,7 @@
                                 <li class="list-group-item"><a href="{{ route('roles.index') }}">Quản lý vai trò</a></li>
                             @endcan
                             <li class="list-group-item"><a href="{{ route('message.index') }}">Trò chuyện</a></li>
+                            <li class="list-group-item"><a href="{{ route('user.account') }}">Tài khoản của tôi</a></li>
                           </ul>
                     </div>
                 </div>

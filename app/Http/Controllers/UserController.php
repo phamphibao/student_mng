@@ -11,7 +11,7 @@ use File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
-
+use Auth;
 class UserController extends Controller
 {
     /**
@@ -108,7 +108,8 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        if (Gate::allows('isAdmin')) {
+        $user_current = Auth::id();
+        if (Gate::allows('isAdmin') || $user_current == $id ) {
             $user_edit = User::find($id);
             $roles = Roles::all();
             $classes = Classes::all();
@@ -199,4 +200,12 @@ class UserController extends Controller
         }
     }
 
+    public function account()
+    {
+        $user = Auth::user();
+        if (empty($user)) {
+            abort('404');
+        }
+        return view('admin.users.show', compact('user'));
+    }
 }
